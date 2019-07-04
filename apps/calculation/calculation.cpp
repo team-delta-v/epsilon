@@ -66,12 +66,28 @@ KDCoordinate Calculation::height(Context * context, bool expanded) {
     DisplayOutput display = displayOutput(context);
     Layout inputLayout = createInputLayout();
     KDCoordinate inputHeight = inputLayout.layoutSize().height();
+    KDCoordinate inputWidth = inputLayout.layoutSize().width();
+    float singleMargin = 2 * Metric::CommonSmallMargin;
+    float doubleMargin = 4 * Metric::CommonSmallMargin;
+    bool singleLine = false;
     if (display == DisplayOutput::ExactOnly) {
       KDCoordinate exactOutputHeight = createExactOutputLayout().layoutSize().height();
-      *memoizedHeight = inputHeight+exactOutputHeight;
+      KDCoordinate exactOutputWidth = createExactOutputLayout().layoutSize().width();
+      singleLine = exactOutputWidth + inputWidth < maxWidth - 40;
+      if (singleLine) {
+        *memoizedHeight = (inputHeight >= exactOutputHeight) ? inputHeight + singleMargin : exactOutputHeight + singleMargin;
+      } else {
+        *memoizedHeight = inputHeight + exactOutputHeight + doubleMargin;
+      }
     } else if (display == DisplayOutput::ApproximateOnly || (!expanded && display == DisplayOutput::ExactAndApproximateToggle)) {
       KDCoordinate approximateOutputHeight = createApproximateOutputLayout(context).layoutSize().height();
-      *memoizedHeight = inputHeight+approximateOutputHeight;
+      KDCoordinate approximateOutputWidth = createApproximateOutputLayout(context).layoutSize().width();
+      singleLine = approximateOutputWidth + inputWidth < maxWidth - 40;
+      if (singleLine) {
+        *memoizedHeight = (inputHeight >= approximateOutputHeight) ? inputHeight + singleMargin : approximateOutputHeight + singleMargin;
+      } else {
+        *memoizedHeight = inputHeight + approximateOutputHeight + doubleMargin;
+      }
     } else {
       assert(display == DisplayOutput::ExactAndApproximate || (display == DisplayOutput::ExactAndApproximateToggle && expanded));
       Layout approximateLayout = createApproximateOutputLayout(context);
@@ -79,7 +95,15 @@ KDCoordinate Calculation::height(Context * context, bool expanded) {
       KDCoordinate approximateOutputHeight = approximateLayout.layoutSize().height();
       KDCoordinate exactOutputHeight = exactLayout.layoutSize().height();
       KDCoordinate outputHeight = maxCoordinate(exactLayout.baseline(), approximateLayout.baseline()) + maxCoordinate(exactOutputHeight-exactLayout.baseline(), approximateOutputHeight-approximateLayout.baseline());
-      *memoizedHeight = inputHeight + outputHeight;
+      KDCoordinate exactOutputWidth = exactLayout.layoutSize().width();
+      KDCoordinate approximateOutputWidth = approximateLayout.layoutSize().width();
+      KDCoordinate outputWidth = exactOutputWidth + approximateOutputWidth;
+      singleLine = outputWidth + inputWidth < maxWidth - 70;
+      if (singleLine) {
+        *memoizedHeight  = (inputHeight >= outputHeight) ? inputHeight + singleMargin : outputHeight + singleMargin;
+      } else {
+        *memoizedHeight  = inputHeight + outputHeight + doubleMargin;
+      }
     }
     /* For all display output except ExactAndApproximateToggle, the selected
      * height and the usual height are identical. We update both heights in

@@ -43,6 +43,7 @@ public:
   Poincare::Layout createApproximateOutputLayout(Poincare::Context * context);
   bool isEmpty();
   void tidy();
+  int maxWidth = 314;
   DisplayOutput displayOutput(Poincare::Context * context);
   bool shouldOnlyDisplayExactOutput();
   EqualSign exactAndApproximateDisplayedOutputsAreEqual(Poincare::Context * context);

@@ -29,7 +29,7 @@ public:
 private:
   CalculationSelectableTableView * selectableTableView();
   void historyViewCellDidChangeSelection() override;
-  constexpr static int k_maxNumberOfDisplayedRows = 5;
+  constexpr static int k_maxNumberOfDisplayedRows = 8;
   CalculationSelectableTableView m_selectableTableView;
   HistoryViewCell m_calculationHistory[k_maxNumberOfDisplayedRows];
   CalculationStore * m_calculationStore;
