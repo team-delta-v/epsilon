@@ -1,0 +1,12 @@
+image: ubuntu
+
+before_script:
+  - apt update
+  - apt-get install -y bison build-essential dfu-util flex gcc-arm-none-eabi git libfltk1.3-dev libfreetype6-dev libpng-dev pkg-config python
+
+test:
+  script:
+    - ./build.sh
+  artifacts:
+    paths:
+      - epsilon.bin
