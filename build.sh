@@ -2,5 +2,5 @@
 set -e
 
 make clean
-make
+make EPSILON_VERSION=dv-git-$(git rev-parse --short HEAD)
 arm-none-eabi-objcopy -O binary build/device/epsilon.elf epsilon.bin
